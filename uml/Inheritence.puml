@@ -43,6 +43,9 @@ class HeroAircraft {
     + HeroAircraft(int locationX, int locationY, int speedX, int speedY, int hp)
     + forward():void
     + shoot():List<BaseBullet>
+    + uphp(int hp_pluss): void
+    + bullet_activated(): void
+    + reset_shootNum(): void
 }
 
 AbstractAircraft <|-- HeroAircraft
@@ -54,9 +57,21 @@ class MobEnemy {
 }
 AbstractAircraft <|-- MobEnemy
 
+class EliteEnemy{
+    -shootNum: int
+    -power: int
+    -direction: int
+
+    + EliteEnemy(int locationX, int locationY, int speedX, int speedY, int hp)
+    + forward(): void
+    + shoot():List<BaseBullet>
+}
+AbstractAircraft <|-- EliteEnemy
+
 abstract class BaseBullet
 {
     - power:int
+
     + BaseBullet(int locationX, int locationY, int speedX, int speedY, int power)
     + forward():void
 	+ getPower():int
@@ -75,7 +90,37 @@ class EnemyBullet {
 BaseBullet <|-- HeroBullet
 BaseBullet <|-- EnemyBullet
 
+abstract class Prop {
+    + Prop(int locationX, int locationY, int speedX, int speedY)
+    + forward(): void
+    + aftercrash(Game game): void
+}
+
+class Prop_blood{
+    - blood: int
+
+    + Prop_blood(int locationX, int locationY, int X, int Y, int blood)
+    + afercrash(Game game):void
+}
+
+class Prop_bomb{
+    + Prop_bomb(int locationX, int locationY, int X, int Y)
+    + afercrash(Game game): void
+}
+
+class Prop_bullet{
+    + Prop_bullet(int locationX, int locationY, int X, int Y)
+    + aftercrash(Game game): void
+}
+
+Prop_blood <|-- Prop
+Prop_bomb <|-- Prop
+Prop_bullet <|-- Prop
+
+
+AbstractFlyingObject <|-- Prop
 AbstractFlyingObject <|-- AbstractAircraft
 AbstractFlyingObject <|-- BaseBullet
+
 
 @enduml

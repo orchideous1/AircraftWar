@@ -25,7 +25,7 @@ public class HeroAircraft extends AbstractAircraft {
     private int power = 30;
 
     /**
-     * 子弹射击方向 (向上发射：1，向下发射：-1)
+     * 子弹射击方向 (向上发射：-1，向下发射：1)
      */
     private int direction = -1;
 
@@ -66,4 +66,19 @@ public class HeroAircraft extends AbstractAircraft {
         return res;
     }
 
+    public void uphp(int hp_plus){
+        if (this.hp + hp_plus < this.maxHp) {
+            this.hp += hp_plus;
+        }else {
+            this.hp = this.maxHp;
+        }
+    }
+
+    public void bullet_activate(){
+        this.shootNum = 5;
+    }
+
+    public void reset_shootNum(){
+        this.shootNum = 1;
+    }
 }
