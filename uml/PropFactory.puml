@@ -1,0 +1,52 @@
+@startuml
+'https://plantuml.com/sequence-diagram
+
+abstract class Prop {
+    + Prop(int locationX, int locationY, int speedX, int speedY)
+    + forward(): void
+    + aftercrash(Game game): void
+}
+
+class Prop_blood{
+    - blood: int
+
+    + Prop_blood(int locationX, int locationY, int X, int Y, int blood)
+    + afercrash(Game game):void
+}
+
+class Prop_bomb{
+    + Prop_bomb(int locationX, int locationY, int X, int Y)
+    + afercrash(Game game): void
+}
+
+class Prop_bullet{
+    + Prop_bullet(int locationX, int locationY, int X, int Y)
+    + aftercrash(Game game): void
+}
+
+Prop_blood <|-- Prop
+Prop_bomb <|-- Prop
+Prop_bullet <|-- Prop
+
+interface PropFactory{
+    + createProp(int locationX, int locationY, int X, int Y):Prop
+}
+
+class PropFactory_blood{
+    + createProp(int locationX, int locationY, int X, int Y):Prop
+}
+
+class PropFactory_bomb{
+    + createProp(int locationX, int locationY, int X, int Y):Prop
+}
+
+class PropFactory_bullet{
+    + createProp(int locationX, int locationY, int X, int Y):Prop
+}
+
+PropFactory_blood <|-- PropFactory
+PropFactory_bomb <|-- PropFactory
+PropFactory_bullet <|-- PropFactory
+
+PropFactory ..> Prop
+@enduml

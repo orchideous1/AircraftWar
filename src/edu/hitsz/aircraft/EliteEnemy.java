@@ -9,7 +9,7 @@ import edu.hitsz.bullet.HeroBullet;
 import java.util.LinkedList;
 import java.util.List;
 
-public class EliteEnemy extends AbstractAircraft{
+public class EliteEnemy extends enemyAircraft {
     private int shootNum = 1;
 
     private int power = 6;
@@ -46,6 +46,9 @@ public class EliteEnemy extends AbstractAircraft{
         return res;
     }
 
+    public void aftercrash(){
+
+    }
 
 
 }

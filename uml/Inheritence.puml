@@ -122,5 +122,4 @@ AbstractFlyingObject <|-- Prop
 AbstractFlyingObject <|-- AbstractAircraft
 AbstractFlyingObject <|-- BaseBullet
 
-
 @enduml

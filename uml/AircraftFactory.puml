@@ -1,0 +1,46 @@
+@startuml
+'https://plantuml.com/sequence-diagram
+
+
+
+interface enemyFactory{
+    + createEnemy(int locationX, int locationY, int speedX, int speedY, int hp):enemyAircraft
+}
+
+abstract class enemyAircraft{
+    + enemyAircraft(int locationX, int locationY, int speedX, int speedY, int hp)
+    + aftercrash():void
+}
+
+class MobEnemy {
+    + MobEnemy(int locationX, int locationY, int speedX, int speedY, int hp)
+    + forward():void
+    + shoot():List<BaseBullet>
+}
+
+
+class EliteEnemy{
+    -shootNum: int
+    -power: int
+    -direction: int
+
+    + EliteEnemy(int locationX, int locationY, int speedX, int speedY, int hp)
+    + forward(): void
+    + shoot():List<BaseBullet>
+}
+
+enemyAircraft <|-- EliteEnemy
+enemyAircraft <|-- MobEnemy
+
+class MobFactory{
+    + createEnemy(int locationX, int locationY, int speedX, int speedY, int hp):enemyAircraft
+}
+
+class EliteFactory{
+    + createEnemy(int locationX, int locationY, int speedX, int speedY, int hp):enemyAircraft
+}
+
+enemyFactory <|-- MobFactory
+enemyFactory <|-- EliteFactory
+enemyFactory ..> enemyAircraft
+@enduml

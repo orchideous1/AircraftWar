@@ -1,5 +1,6 @@
 package edu.hitsz.application;
 
+import edu.hitsz.Factories.*;
 import edu.hitsz.Prop.Prop;
 import edu.hitsz.Prop.Prop_blood;
 import edu.hitsz.Prop.Prop_bomb;
@@ -37,7 +38,13 @@ Game extends JPanel {
     private int timeInterval = 40;
 
     private final HeroAircraft heroAircraft;
-    private final List<AbstractAircraft> enemyAircrafts;
+    private final List<enemyAircraft> enemyAircrafts;
+
+
+    private  enemyFactory Factory = null;
+
+    private PropFactory propFactory = null;
+
     private final List<BaseBullet> heroBullets;
     private final List<BaseBullet> enemyBullets;
 
@@ -70,10 +77,7 @@ Game extends JPanel {
     private boolean gameOverFlag = false;
 
     public Game() {
-        heroAircraft = new HeroAircraft(
-                Main.WINDOW_WIDTH / 2,
-                Main.WINDOW_HEIGHT - ImageManager.HERO_IMAGE.getHeight() ,
-                0, 0, 100);
+        heroAircraft = HeroAircraft.getInstance();
 
         enemyAircrafts = new LinkedList<>();
         heroBullets = new LinkedList<>();
@@ -116,21 +120,25 @@ Game extends JPanel {
                 if (enemyAircrafts.size() < enemyMaxNumber) {
                     double prob = Math.random();
                     if(prob < 0.6) {
-                        enemyAircrafts.add(new MobEnemy(
-                                (int) (Math.random() * (Main.WINDOW_WIDTH - ImageManager.MOB_ENEMY_IMAGE.getWidth())),
-                                (int) (Math.random() * Main.WINDOW_HEIGHT * 0.05),
-                                0,
-                                10,
-                                30
-                        ));
+//                        enemyAircrafts.add(new MobEnemy(
+//                                (int) (Math.random() * (Main.WINDOW_WIDTH - ImageManager.MOB_ENEMY_IMAGE.getWidth())),
+//                                (int) (Math.random() * Main.WINDOW_HEIGHT * 0.05),
+//                                0,
+//                                10,
+//                                30
+//                        ));
+                        Factory = new MobFactory();
+                        enemyAircrafts.add(Factory.createEnemy());
                     }else {
-                        enemyAircrafts.add(new EliteEnemy(
-                                (int) (Math.random() * (Main.WINDOW_WIDTH - ImageManager.MOB_ENEMY_IMAGE.getWidth())),
-                                (int) (Math.random() * Main.WINDOW_HEIGHT * 0.05),
-                                2,
-                                10,
-                                30
-                        ));
+//                        enemyAircrafts.add(new EliteEnemy(
+//                                (int) (Math.random() * (Main.WINDOW_WIDTH - ImageManager.MOB_ENEMY_IMAGE.getWidth())),
+//                                (int) (Math.random() * Main.WINDOW_HEIGHT * 0.05),
+//                                2,
+//                                10,
+//                                30
+//                        ));
+                        Factory = new EliteFactory();
+                        enemyAircrafts.add(Factory.createEnemy());
                     }
                 }
                 // 飞机射出子弹
@@ -190,7 +198,7 @@ Game extends JPanel {
 
     private void shootAction() {
         // TODO 敌机射击
-        for (AbstractAircraft plane : enemyAircrafts) {
+        for (enemyAircraft plane : enemyAircrafts) {
             enemyBullets.addAll(plane.shoot());
         }
         // 英雄射击
@@ -241,7 +249,7 @@ Game extends JPanel {
             if (bullet.notValid()) {
                 continue;
             }
-            for (AbstractAircraft enemyAircraft : enemyAircrafts) {
+            for (enemyAircraft enemyAircraft : enemyAircrafts) {
                 if (enemyAircraft.notValid()) {
                     // 已被其他子弹击毁的敌机，不再检测
                     // 避免多个子弹重复击毁同一敌机的判定
@@ -256,26 +264,32 @@ Game extends JPanel {
                         // TODO 获得分数，产生道具补给
                         if (enemyAircraft instanceof EliteEnemy){
                             double prob = Math.random();
-                            if (prob < 0.3) {
+                            if (prob < 0.1) {
                                 continue;
-                            } else if (prob < 0.6) {
+                            } else if (prob < 0.4) {
                                 int X = enemyAircraft.getLocationX();
                                 int Y = enemyAircraft.getLocationY();
                                 int speedX = 0;
                                 int speedY = enemyAircraft.getSpeedY();
-                                MyProp.add(new Prop_blood(X, Y, speedX, speedY));
+                                //MyProp.add(new Prop_blood(X, Y, speedX, speedY));
+                                propFactory = new PropFactory_blood();
+                                MyProp.add(propFactory.createProp(X, Y, speedX, speedY));
                             } else if (prob < 0.7) {
                                 int X = enemyAircraft.getLocationX();
                                 int Y = enemyAircraft.getLocationY();
                                 int speedX = 0;
                                 int speedY = enemyAircraft.getSpeedY();
-                                MyProp.add(new Prop_bomb(X, Y, speedX, speedY));
+                                //MyProp.add(new Prop_bomb(X, Y, speedX, speedY));
+                                propFactory = new PropFactory_bomb();
+                                MyProp.add(propFactory.createProp(X, Y, speedX, speedY));
                             } else {
                                 int X = enemyAircraft.getLocationX();
                                 int Y = enemyAircraft.getLocationY();
                                 int speedX = 0;
                                 int speedY = enemyAircraft.getSpeedY();
-                                MyProp.add(new Prop_bullet(X, Y, speedX, speedY));
+                                //MyProp.add(new Prop_bullet(X, Y, speedX, speedY));
+                                propFactory = new PropFactory_bullet();
+                                MyProp.add(propFactory.createProp(X, Y, speedX, speedY));
                             }
                         }
                         score += 10;
@@ -291,7 +305,9 @@ Game extends JPanel {
 
         // Todo: 我方获得道具，道具生效
         for (Prop craft: MyProp) {
-            if (heroAircraft.crash(craft)){
+            if (craft.notValid()){
+                continue;
+            } else if (heroAircraft.crash(craft) || craft.crash(heroAircraft)){
                 craft.aftercrash(this);
                 craft.vanish();
             }
@@ -303,11 +319,14 @@ Game extends JPanel {
     }
 
     public void bomb_activated(){
+        int len = this.enemyAircrafts.size();
+        this.score += 10 * len;
         this.enemyAircrafts.clear();
     }
 
     public void bullet_activated(){
         this.heroAircraft.bullet_activate();
+
         heroBullets.addAll(heroAircraft.shoot());
     }
 

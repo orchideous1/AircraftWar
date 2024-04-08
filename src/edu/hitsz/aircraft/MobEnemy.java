@@ -12,7 +12,7 @@ import java.util.List;
  *
  * @author hitsz
  */
-public class MobEnemy extends AbstractAircraft {
+public class MobEnemy extends enemyAircraft {
 
     public MobEnemy(int locationX, int locationY, int speedX, int speedY, int hp) {
         super(locationX, locationY, speedX, speedY, hp);
@@ -30,6 +30,11 @@ public class MobEnemy extends AbstractAircraft {
     @Override
     public List<BaseBullet> shoot() {
         return new LinkedList<>();
+    }
+
+    @Override
+    public void aftercrash(){
+
     }
 
 }
