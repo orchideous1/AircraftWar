@@ -1,7 +1,10 @@
 package edu.hitsz.aircraft;
 
+import edu.hitsz.Prop.Prop;
+import edu.hitsz.application.Main;
 import edu.hitsz.bullet.BaseBullet;
 
+import java.util.LinkedList;
 import java.util.List;
 
 public abstract class enemyAircraft extends AbstractAircraft{
@@ -10,5 +13,6 @@ public abstract class enemyAircraft extends AbstractAircraft{
         super(locationX, locationY, speedX, speedY, hp);
     }
 
-    abstract void aftercrash();
+
+    abstract public void aftercrash(List<Prop> MyProp);
 }

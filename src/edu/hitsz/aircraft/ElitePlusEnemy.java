@@ -1,5 +1,4 @@
 package edu.hitsz.aircraft;
-
 import edu.hitsz.Factories.PropFactory;
 import edu.hitsz.Factories.PropFactory_blood;
 import edu.hitsz.Factories.PropFactory_bomb;
@@ -13,17 +12,13 @@ import edu.hitsz.bullet.HeroBullet;
 
 import java.util.LinkedList;
 import java.util.List;
-
-public class EliteEnemy extends enemyAircraft {
-    private int shootNum = 1;
-
-    private int power = 6;
+public class ElitePlusEnemy extends enemyAircraft{
+    private int shootNum = 5;
+    private int power = 10;
 
     private int direction = 1;
 
-    private int Propnum = 1;
-
-    public EliteEnemy(int locationX, int locationY, int speedX, int speedY, int hp){
+    public ElitePlusEnemy(int locationX, int locationY, int speedX, int speedY, int hp){
         super(locationX, locationY, speedX, speedY, hp);
     }
 
@@ -37,8 +32,9 @@ public class EliteEnemy extends enemyAircraft {
     }
 
     @Override
-    public List<BaseBullet> shoot(){
+    public List<BaseBullet> shoot() {
         List<BaseBullet> res = new LinkedList<>();
+
         int x = this.getLocationX();
         int y = this.getLocationY() + direction*2;
         int speedX = 0;
@@ -47,9 +43,13 @@ public class EliteEnemy extends enemyAircraft {
         for(int i=0; i<shootNum; i++){
             // 子弹发射位置相对飞机位置向前偏移
             // 多个子弹横向分散
-            bullet = new EnemyBullet(x + (i*2 - shootNum + 1)*10, y, speedX, speedY, power);
+            if (shootNum % 2 == 0){
+                continue;
+            }
+            bullet = new EnemyBullet(x + (i*2 - shootNum + 3)*10, y, speedX -3 + i, speedY, power);
             res.add(bullet);
         }
+
         return res;
     }
 
@@ -84,6 +84,4 @@ public class EliteEnemy extends enemyAircraft {
             MyProp.add(propFactory.createProp(X, Y, speedX, speedY));
         }
     }
-
-
 }

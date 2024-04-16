@@ -2,17 +2,18 @@ package edu.hitsz.application;
 
 import edu.hitsz.Factories.*;
 import edu.hitsz.Prop.Prop;
-import edu.hitsz.Prop.Prop_blood;
-import edu.hitsz.Prop.Prop_bomb;
-import edu.hitsz.Prop.Prop_bullet;
+
 import edu.hitsz.aircraft.*;
 import edu.hitsz.bullet.BaseBullet;
 import edu.hitsz.basic.AbstractFlyingObject;
 import org.apache.commons.lang3.concurrent.BasicThreadFactory;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.util.*;
 import java.util.List;
 import java.util.concurrent.*;
@@ -43,12 +44,15 @@ Game extends JPanel {
 
     private  enemyFactory Factory = null;
 
-    private PropFactory propFactory = null;
+    private boolean isboss = false;
+
+    private int chapter = 1;
 
     private final List<BaseBullet> heroBullets;
     private final List<BaseBullet> enemyBullets;
 
     private final List<Prop> MyProp;
+
 
     /**
      * 屏幕中出现的敌机最大数量
@@ -117,26 +121,22 @@ Game extends JPanel {
                 System.out.println(time);
                 // 新敌机产生
 
+                if (this.score != 0 && this.score >= 200 * chapter  && !isboss) {
+                    Factory = new BossFactory();
+                    enemyAircrafts.add(Factory.createEnemy());
+                    isboss = true;
+                    this.chapter += this.chapter;
+                    //System.out.println(200 * chapter);
+                }
+
                 if (enemyAircrafts.size() < enemyMaxNumber) {
                     double prob = Math.random();
                     if(prob < 0.6) {
-//                        enemyAircrafts.add(new MobEnemy(
-//                                (int) (Math.random() * (Main.WINDOW_WIDTH - ImageManager.MOB_ENEMY_IMAGE.getWidth())),
-//                                (int) (Math.random() * Main.WINDOW_HEIGHT * 0.05),
-//                                0,
-//                                10,
-//                                30
-//                        ));
+
                         Factory = new MobFactory();
                         enemyAircrafts.add(Factory.createEnemy());
                     }else {
-//                        enemyAircrafts.add(new EliteEnemy(
-//                                (int) (Math.random() * (Main.WINDOW_WIDTH - ImageManager.MOB_ENEMY_IMAGE.getWidth())),
-//                                (int) (Math.random() * Main.WINDOW_HEIGHT * 0.05),
-//                                2,
-//                                10,
-//                                30
-//                        ));
+
                         Factory = new EliteFactory();
                         enemyAircrafts.add(Factory.createEnemy());
                     }
@@ -249,50 +249,26 @@ Game extends JPanel {
             if (bullet.notValid()) {
                 continue;
             }
+
             for (enemyAircraft enemyAircraft : enemyAircrafts) {
                 if (enemyAircraft.notValid()) {
                     // 已被其他子弹击毁的敌机，不再检测
                     // 避免多个子弹重复击毁同一敌机的判定
                     continue;
                 }
-                if (enemyAircraft.crash(bullet)) {
+                if (enemyAircraft.crash(bullet) ) {
                     // 敌机撞击到英雄机子弹
                     // 敌机损失一定生命值
                     enemyAircraft.decreaseHp(bullet.getPower());
                     bullet.vanish();
                     if (enemyAircraft.notValid()) {
-                        // TODO 获得分数，产生道具补给
-                        if (enemyAircraft instanceof EliteEnemy){
-                            double prob = Math.random();
-                            if (prob < 0.1) {
-                                continue;
-                            } else if (prob < 0.4) {
-                                int X = enemyAircraft.getLocationX();
-                                int Y = enemyAircraft.getLocationY();
-                                int speedX = 0;
-                                int speedY = enemyAircraft.getSpeedY();
-                                //MyProp.add(new Prop_blood(X, Y, speedX, speedY));
-                                propFactory = new PropFactory_blood();
-                                MyProp.add(propFactory.createProp(X, Y, speedX, speedY));
-                            } else if (prob < 0.7) {
-                                int X = enemyAircraft.getLocationX();
-                                int Y = enemyAircraft.getLocationY();
-                                int speedX = 0;
-                                int speedY = enemyAircraft.getSpeedY();
-                                //MyProp.add(new Prop_bomb(X, Y, speedX, speedY));
-                                propFactory = new PropFactory_bomb();
-                                MyProp.add(propFactory.createProp(X, Y, speedX, speedY));
-                            } else {
-                                int X = enemyAircraft.getLocationX();
-                                int Y = enemyAircraft.getLocationY();
-                                int speedX = 0;
-                                int speedY = enemyAircraft.getSpeedY();
-                                //MyProp.add(new Prop_bullet(X, Y, speedX, speedY));
-                                propFactory = new PropFactory_bullet();
-                                MyProp.add(propFactory.createProp(X, Y, speedX, speedY));
-                            }
+                        if (enemyAircraft instanceof BossEnemy){
+                            this.isboss = false;
+                            System.out.println("Boss Destroyed!");
                         }
-                        score += 10;
+                        // TODO 获得分数，产生道具补给
+                        enemyAircraft.aftercrash(MyProp);
+                        score += 20;
                     }
                 }
                 // 英雄机 与 敌机 相撞，均损毁
@@ -321,6 +297,12 @@ Game extends JPanel {
     public void bomb_activated(){
         int len = this.enemyAircrafts.size();
         this.score += 10 * len;
+        for (enemyAircraft enemy : this.enemyAircrafts) {
+            enemy.aftercrash(MyProp);
+            if (enemy instanceof BossEnemy){
+                this.isboss = false;
+            }
+        }
         this.enemyAircrafts.clear();
     }
 
@@ -342,6 +324,7 @@ Game extends JPanel {
         heroBullets.removeIf(AbstractFlyingObject::notValid);
         enemyAircrafts.removeIf(AbstractFlyingObject::notValid);
         MyProp.removeIf(AbstractFlyingObject::notValid);
+
     }
 
 
@@ -353,11 +336,39 @@ Game extends JPanel {
      * 重写paint方法
      * 通过重复调用paint方法，实现游戏动画
      *
-     * @param  g
+     * @param g
      */
     @Override
     public void paint(Graphics g) {
         super.paint(g);
+
+        if (this.score >= 12000) {
+            try{
+                ImageManager.BACKGROUND_IMAGE = ImageIO.read(new FileInputStream("src/images/bg5.jpg"));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        } else if (this.score >= 8000) {
+            try{
+                ImageManager.BACKGROUND_IMAGE = ImageIO.read(new FileInputStream("src/images/bg4.jpg"));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        } else if (this.score >= 5000) {
+            try{
+                ImageManager.BACKGROUND_IMAGE = ImageIO.read(new FileInputStream("src/images/bg3.jpg"));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        } else if (this.score >= 1000) {
+            try {
+                ImageManager.BACKGROUND_IMAGE = ImageIO.read(new FileInputStream("src/images/bg2.jpg"));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+
 
 
         // 绘制背景,图片滚动
@@ -375,8 +386,10 @@ Game extends JPanel {
         paintImageWithPositionRevised(g, MyProp);
         paintImageWithPositionRevised(g, enemyAircrafts);
 
+
         g.drawImage(ImageManager.HERO_IMAGE, heroAircraft.getLocationX() - ImageManager.HERO_IMAGE.getWidth() / 2,
                 heroAircraft.getLocationY() - ImageManager.HERO_IMAGE.getHeight() / 2, null);
+
 
         //绘制得分和生命值
         paintScoreAndLife(g);
