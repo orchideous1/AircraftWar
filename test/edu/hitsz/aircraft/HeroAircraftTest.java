@@ -51,9 +51,9 @@ class HeroAircraftTest {
     }
     @DisplayName("uphp")
     @ParameterizedTest
-    @ValueSource(ints = {1, 10, 30, 45, 55, 67, 79, 81, 93, 100})
+    @ValueSource(ints = {1, 20, 30, 45, 55, 67, 79, 81, 93, 101})
     void uphp(int plus) {
-        heroAircraft.decreaseHp(300);
+        heroAircraft.decreaseHp(50);
         int current_hp = heroAircraft.getHp();
         int max_hp = 1000;
         heroAircraft.uphp(plus);
