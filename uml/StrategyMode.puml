@@ -1,0 +1,45 @@
+@startuml
+interface strategy
+{
+    + {abstract} shoot(AbstractAircraft aircraft):List<BaseBullet>
+}
+
+class CircleShoot
+{
+    + shoot(AbstractAircraft aircraft):List<BaseBullet>
+}
+
+class StraightShoot
+{
+    + shoot(AbstractAircraft aircraft):List<BaseBullet>
+}
+
+class ScatterShoot
+{
+    + shoot(AbstractAircraft aircraft):List<BaseBullet>
+}
+
+strategy <|.. CircleShoot
+strategy <|.. StraightShoot
+strategy <|.. ScatterShoot
+
+abstract class AbstractAircraft
+{
+    # strategy: Strategy
+    # direction: int
+    # hp: int
+    # maxhp: int
+    # power: int
+    + getPower():int
+    + getHp():int
+    + setStrategy(strategy: Strategy):void
+    + {abstract} shoot():List<BaseBullet>
+}
+
+AbstractAircraft o--> strategy
+
+class Game{
+
+}
+
+@enduml

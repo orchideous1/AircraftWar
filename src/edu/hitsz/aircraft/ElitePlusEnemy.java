@@ -9,17 +9,24 @@ import edu.hitsz.application.Main;
 import edu.hitsz.bullet.BaseBullet;
 import edu.hitsz.bullet.EnemyBullet;
 import edu.hitsz.bullet.HeroBullet;
+import edu.hitsz.strategy.ScatterShoot;
+import edu.hitsz.strategy.Strategy;
 
 import java.util.LinkedList;
 import java.util.List;
 public class ElitePlusEnemy extends enemyAircraft{
-    private int shootNum = 5;
-    private int power = 10;
+//    private int shootNum = 5;
+//    private int power = 10;
 
-    private int direction = 1;
+
+
+
 
     public ElitePlusEnemy(int locationX, int locationY, int speedX, int speedY, int hp){
         super(locationX, locationY, speedX, speedY, hp);
+        this.shootNum = 5;
+        this.power = 10;
+        this.strategy = new ScatterShoot();
     }
 
     @Override
@@ -33,25 +40,27 @@ public class ElitePlusEnemy extends enemyAircraft{
 
     @Override
     public List<BaseBullet> shoot() {
-        List<BaseBullet> res = new LinkedList<>();
-
-        int x = this.getLocationX();
-        int y = this.getLocationY() + direction*2;
-        int speedX = 0;
-        int speedY = this.getSpeedY() + direction*4;
-        BaseBullet bullet;
-        for(int i=0; i<shootNum; i++){
-            // 子弹发射位置相对飞机位置向前偏移
-            // 多个子弹横向分散
-            if (shootNum % 2 == 0){
-                continue;
-            }
-            bullet = new EnemyBullet(x + (i*2 - shootNum + 3)*10, y, speedX -3 + i, speedY, power);
-            res.add(bullet);
-        }
-
-        return res;
+        return strategy.shoot(this);
     }
+//        List<BaseBullet> res = new LinkedList<>();
+//
+//        int x = this.getLocationX();
+//        int y = this.getLocationY() + direction*2;
+//        int speedX = 0;
+//        int speedY = this.getSpeedY() + direction*4;
+//        BaseBullet bullet;
+//        for(int i=0; i<shootNum; i++){
+//            // 子弹发射位置相对飞机位置向前偏移
+//            // 多个子弹横向分散
+//            if (shootNum % 2 == 0){
+//                continue;
+//            }
+//            bullet = new EnemyBullet(x + (i*2 - shootNum + 3)*10, y, speedX -3 + i, speedY, power);
+//            res.add(bullet);
+//        }
+//
+//        return res;
+//    }
 
     public void aftercrash(List<Prop> MyProp){
         double prob = Math.random();

@@ -1,5 +1,6 @@
 package edu.hitsz.Prop;
 
+import edu.hitsz.aircraft.HeroAircraft;
 import edu.hitsz.application.Game;
 
 public class Prop_blood extends Prop{
@@ -9,7 +10,7 @@ public class Prop_blood extends Prop{
     }
 
     @Override
-    public void aftercrash(Game game){
-        game.hero_hp_plus(blood);
+    public void aftercrash(HeroAircraft heroAircraft){
+        heroAircraft.uphp(blood);
     }
 }

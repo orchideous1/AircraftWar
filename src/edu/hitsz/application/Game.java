@@ -12,8 +12,8 @@ import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.io.FileInputStream;
-import java.io.IOException;
+import java.io.*;
+import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.List;
 import java.util.concurrent.*;
@@ -53,7 +53,7 @@ Game extends JPanel {
 
     private final List<Prop> MyProp;
 
-
+    private final DAO dao = new recordDAO();
     /**
      * 屏幕中出现的敌机最大数量
      */
@@ -113,8 +113,6 @@ Game extends JPanel {
 
             time += timeInterval;
 
-            //重置shootNum
-            heroAircraft.reset_shootNum();
 
             // 周期性执行（控制频率）
             if (timeCountAndNewCycleJudge()) {
@@ -126,7 +124,7 @@ Game extends JPanel {
                     enemyAircrafts.add(Factory.createEnemy());
                     isboss = true;
                     this.chapter += this.chapter;
-                    //System.out.println(200 * chapter);
+                    System.out.println(200 * chapter);
                 }
 
                 if (enemyAircrafts.size() < enemyMaxNumber) {
@@ -169,6 +167,11 @@ Game extends JPanel {
                 executorService.shutdown();
                 gameOverFlag = true;
                 System.out.println("Game Over!");
+                this.keep_record();
+                System.out.println("*******************************************");
+                System.out.println("                 得分排行榜                  ");
+                System.out.println("*******************************************");
+                dao.showAllRecord();
             }
 
         };
@@ -284,21 +287,26 @@ Game extends JPanel {
             if (craft.notValid()){
                 continue;
             } else if (heroAircraft.crash(craft) || craft.crash(heroAircraft)){
-                craft.aftercrash(this);
+                craft.aftercrash(heroAircraft);
                 craft.vanish();
             }
         }
     }
 
-    public void hero_hp_plus(int hp_plus){
-        this.heroAircraft.uphp(hp_plus);
+    public void keep_record(){
+        scoreRecord record = new scoreRecord(this.score);
+        dao.addRecord(record);
+
     }
+
+
+
 
     public void bomb_activated(){
         int len = this.enemyAircrafts.size();
         this.score += 10 * len;
         for (enemyAircraft enemy : this.enemyAircrafts) {
-            enemy.aftercrash(MyProp);
+            //enemy.aftercrash(MyProp);
             if (enemy instanceof BossEnemy){
                 this.isboss = false;
             }
@@ -306,11 +314,7 @@ Game extends JPanel {
         this.enemyAircrafts.clear();
     }
 
-    public void bullet_activated(){
-        this.heroAircraft.bullet_activate();
 
-        heroBullets.addAll(heroAircraft.shoot());
-    }
 
     /**
      * 后处理：

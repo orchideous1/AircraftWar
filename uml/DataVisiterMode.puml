@@ -1,0 +1,44 @@
+@startuml
+class scoreRecord{
+    - score: int
+    - UserName: String
+    - date :Date
+    + rank: int
+    + {static} formatter:SimpleDateFormat
+
+    + setUserName(String userName):void
+    + getUserName():String
+    + scoreRecord(int score)
+    + scoreRecord(int score,String userName)
+    + scoreRecord(int score,Date date,String userName)
+    + scoreRecord(int score,Date date)
+    + scoreRecord(String data)
+    + print():void
+    + compareTo(scoreRecord o):int
+    + toString():String
+}
+
+interface DAO{
+    + findRecord(String UserName):void
+    + addRecord(scoreRecord record):void
+    + deleteRecord(String UserName):void
+    + showAllRecord():void
+}
+
+class recordDAO{
+    - file: File
+    + findRecord(String UserName):void
+    + addRecord(scoreRecord record):void
+    + deleteRecord(String UserName):void
+    + showAllRecord():void
+    + getHead(int num): List<scoreRecord>
+}
+
+DAO <|.. recordDAO
+recordDAO --> scoreRecord
+
+class Game{
+
+}
+Game ..> DAO
+@enduml

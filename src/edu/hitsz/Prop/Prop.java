@@ -1,5 +1,6 @@
 package edu.hitsz.Prop;
 
+import edu.hitsz.aircraft.HeroAircraft;
 import edu.hitsz.application.Game;
 import edu.hitsz.application.Main;
 import edu.hitsz.basic.AbstractFlyingObject;
@@ -27,5 +28,5 @@ public abstract class Prop extends AbstractFlyingObject {
         }
     }
 
-    public abstract void aftercrash(Game game);
+    public abstract void aftercrash(HeroAircraft heroAircraft);
 }

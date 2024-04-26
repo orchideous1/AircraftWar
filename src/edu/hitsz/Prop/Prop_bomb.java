@@ -1,5 +1,6 @@
 package edu.hitsz.Prop;
 
+import edu.hitsz.aircraft.HeroAircraft;
 import edu.hitsz.application.Game;
 
 public class Prop_bomb extends Prop{
@@ -8,8 +9,7 @@ public class Prop_bomb extends Prop{
     }
 
     @Override
-    public void aftercrash(Game game){
-        game.bomb_activated();
+    public void aftercrash(HeroAircraft heroAircraft){
         System.out.println("BombSupply active!");
     }
 }
