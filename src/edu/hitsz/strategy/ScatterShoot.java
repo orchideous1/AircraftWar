@@ -25,9 +25,9 @@ public class ScatterShoot implements Strategy {
 //                continue;
 //            }
             if (aircraft instanceof edu.hitsz.aircraft.HeroAircraft){
-                bullet = new HeroBullet(x + (i*2 -shootNum + 3)*10, y, speedX -3 + i, speedY, aircraft.getPower());
+                bullet = new HeroBullet(x + (i*2 -shootNum + 3)*10, y, speedX -2 + i, speedY, aircraft.getPower());
             } else {
-                bullet = new EnemyBullet(x + (i*2 - shootNum + 3)*10, y, speedX -3 + i, speedY, aircraft.getPower());
+                bullet = new EnemyBullet(x + (i*2 - shootNum + 3)*10, y, speedX -2 + i, speedY, aircraft.getPower());
             }
             res.add(bullet);
         }

@@ -8,10 +8,10 @@ public interface DAO {
 
     void addRecord(scoreRecord record);
 
-    void deleteRecord(String UserName);
+    void deleteRecord(String rank);
 
     void showAllRecord();
 
-
+    String[][] getAllRecord();
 }
 

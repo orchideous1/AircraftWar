@@ -21,6 +21,14 @@ public class scoreRecord implements Comparable<scoreRecord>{
     public String getUserName(){
         return this.UserName;
     }
+
+    public int getScore(){
+        return this.score;
+    }
+
+    public String getDate(){
+        return formatter.format(date);
+    }
     public scoreRecord(int score){
         this.score = score;
         this.date = new Date();

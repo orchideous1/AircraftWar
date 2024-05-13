@@ -1,5 +1,7 @@
 package edu.hitsz.application;
 
+import edu.hitsz.SwingDemo;
+
 import javax.swing.*;
 import java.awt.*;
 
@@ -8,6 +10,16 @@ import java.awt.*;
  * @author hitsz
  */
 public class Main {
+
+    public static final CardLayout cardLayout = new CardLayout(0,0);
+    public static final JPanel cardPanel = new JPanel(cardLayout);
+
+    public static boolean ischoosed = false;
+    public static boolean easy = false;
+    public static boolean medium = false;
+    public static boolean difficult = false;
+
+    public static boolean music = true;
 
     public static final int WINDOW_WIDTH = 512;
     public static final int WINDOW_HEIGHT = 768;
@@ -25,10 +37,32 @@ public class Main {
         frame.setBounds(((int) screenSize.getWidth() - WINDOW_WIDTH) / 2, 0,
                 WINDOW_WIDTH, WINDOW_HEIGHT);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.add(cardPanel);
+
+        Runnable st = () -> {
+            SwingDemo start = new SwingDemo();
+            cardPanel.add(start.getMainPanel());
+            frame.setVisible(true);
+            while (!ischoosed) {
+                try {
+                    Thread.sleep(10);
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        };
+        Thread startthread = new Thread(st);
+        startthread.start();
+        try {
+            startthread.join();
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+
 
         Game game = new Game();
-        frame.add(game);
-        frame.setVisible(true);
+        cardPanel.add(game);
+        cardLayout.next(cardPanel);
         game.action();
     }
 }

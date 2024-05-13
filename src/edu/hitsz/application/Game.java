@@ -6,6 +6,7 @@ import edu.hitsz.Prop.Prop;
 import edu.hitsz.aircraft.*;
 import edu.hitsz.bullet.BaseBullet;
 import edu.hitsz.basic.AbstractFlyingObject;
+import edu.hitsz.scoreboard;
 import org.apache.commons.lang3.concurrent.BasicThreadFactory;
 
 import javax.imageio.ImageIO;
@@ -53,7 +54,7 @@ Game extends JPanel {
 
     private final List<Prop> MyProp;
 
-    private final DAO dao = new recordDAO();
+    public static final DAO dao = new recordDAO();
     /**
      * 屏幕中出现的敌机最大数量
      */
@@ -80,6 +81,9 @@ Game extends JPanel {
      */
     private boolean gameOverFlag = false;
 
+
+    private MusicThread bgm = new MusicThread("src/videos/bgm.wav");
+    private MusicThread bossbgm;
     public Game() {
         heroAircraft = HeroAircraft.getInstance();
 
@@ -100,13 +104,17 @@ Game extends JPanel {
 
         //启动英雄机鼠标监听
         new HeroController(this, heroAircraft);
-
     }
 
     /**
      * 游戏启动入口，执行游戏逻辑
      */
     public void action() {
+        if (Main.music){
+            bgm.setloop();
+            bgm.start();
+        }
+
 
         // 定时任务：绘制、对象产生、碰撞判定、击毁及结束判定
         Runnable task = () -> {
@@ -125,6 +133,13 @@ Game extends JPanel {
                     isboss = true;
                     this.chapter += this.chapter;
                     System.out.println(200 * chapter);
+
+                    if (Main.music){
+                        bossbgm = new MusicThread("src/videos/bgm_boss.wav");
+                        bossbgm.start();
+                        bossbgm.setloop();
+                    }
+
                 }
 
                 if (enemyAircrafts.size() < enemyMaxNumber) {
@@ -167,11 +182,45 @@ Game extends JPanel {
                 executorService.shutdown();
                 gameOverFlag = true;
                 System.out.println("Game Over!");
-                this.keep_record();
+                if (Main.music){
+                    MusicThread end = new MusicThread("src/videos/game_over.wav");
+                    end.start();
+
+                    bgm.end();
+                    if(isboss) {
+                        bossbgm.end();
+                    }
+                }
                 System.out.println("*******************************************");
                 System.out.println("                 得分排行榜                  ");
                 System.out.println("*******************************************");
-                dao.showAllRecord();
+
+
+                //dao.showAllRecord();
+                scoreboard board = new scoreboard(dao.getAllRecord());
+                if (Main.easy){
+                    board.setMode("简单");
+                }else if(Main.medium){
+                    board.setMode("普通");
+                }else if(Main.difficult){
+                    board.setMode("困难");
+                }
+                Main.cardPanel.add(board.getMainPanel());
+                Main.cardLayout.last(Main.cardPanel);
+
+                //保存弹窗
+                String win = JOptionPane.showInputDialog("请输入您的名字");
+                //System.out.println(win);
+                //输入以后更新排行榜
+                if(win != null){
+                    this.keep_record(win);
+                    scoreboard board_new = new scoreboard(dao.getAllRecord());
+                    Main.cardPanel.add(board_new.getMainPanel());
+                    Main.cardLayout.last(Main.cardPanel);
+                }
+
+
+
             }
 
         };
@@ -261,6 +310,10 @@ Game extends JPanel {
                 }
                 if (enemyAircraft.crash(bullet) ) {
                     // 敌机撞击到英雄机子弹
+                    // 子弹击中音效
+                    if (Main.music) {
+                        new MusicThread("src/videos/bullet_hit.wav").start();
+                    }
                     // 敌机损失一定生命值
                     enemyAircraft.decreaseHp(bullet.getPower());
                     bullet.vanish();
@@ -268,6 +321,10 @@ Game extends JPanel {
                         if (enemyAircraft instanceof BossEnemy){
                             this.isboss = false;
                             System.out.println("Boss Destroyed!");
+                            if (Main.music){
+                                bossbgm.end();
+                            }
+
                         }
                         // TODO 获得分数，产生道具补给
                         enemyAircraft.aftercrash(MyProp);
@@ -287,14 +344,18 @@ Game extends JPanel {
             if (craft.notValid()){
                 continue;
             } else if (heroAircraft.crash(craft) || craft.crash(heroAircraft)){
+                if(Main.music){
+                    new MusicThread("src/videos/get_supply.wav").start();
+                }
+
                 craft.aftercrash(heroAircraft);
                 craft.vanish();
             }
         }
     }
 
-    public void keep_record(){
-        scoreRecord record = new scoreRecord(this.score);
+    public void keep_record(String name){
+        scoreRecord record = new scoreRecord(this.score, name);
         dao.addRecord(record);
 
     }
@@ -346,31 +407,31 @@ Game extends JPanel {
     public void paint(Graphics g) {
         super.paint(g);
 
-        if (this.score >= 12000) {
-            try{
-                ImageManager.BACKGROUND_IMAGE = ImageIO.read(new FileInputStream("src/images/bg5.jpg"));
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        } else if (this.score >= 8000) {
-            try{
-                ImageManager.BACKGROUND_IMAGE = ImageIO.read(new FileInputStream("src/images/bg4.jpg"));
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        } else if (this.score >= 5000) {
-            try{
-                ImageManager.BACKGROUND_IMAGE = ImageIO.read(new FileInputStream("src/images/bg3.jpg"));
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        } else if (this.score >= 1000) {
-            try {
-                ImageManager.BACKGROUND_IMAGE = ImageIO.read(new FileInputStream("src/images/bg2.jpg"));
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
+//        if (this.score >= 12000) {
+//            try{
+//                ImageManager.BACKGROUND_IMAGE = ImageIO.read(new FileInputStream("src/images/bg5.jpg"));
+//            } catch (IOException e) {
+//                e.printStackTrace();
+//            }
+//        } else if (this.score >= 8000) {
+//            try{
+//                ImageManager.BACKGROUND_IMAGE = ImageIO.read(new FileInputStream("src/images/bg4.jpg"));
+//            } catch (IOException e) {
+//                e.printStackTrace();
+//            }
+//        } else if (this.score >= 5000) {
+//            try{
+//                ImageManager.BACKGROUND_IMAGE = ImageIO.read(new FileInputStream("src/images/bg3.jpg"));
+//            } catch (IOException e) {
+//                e.printStackTrace();
+//            }
+//        } else if (this.score >= 1000) {
+//            try {
+//                ImageManager.BACKGROUND_IMAGE = ImageIO.read(new FileInputStream("src/images/bg2.jpg"));
+//            } catch (IOException e) {
+//                e.printStackTrace();
+//            }
+//        }
 
 
 
