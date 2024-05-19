@@ -1,7 +1,6 @@
 package edu.hitsz.Prop;
 
 import edu.hitsz.aircraft.HeroAircraft;
-import edu.hitsz.application.Game;
 
 public class Prop_blood extends Prop{
     private final int blood = 5;

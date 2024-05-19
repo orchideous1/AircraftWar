@@ -110,8 +110,10 @@ public class MusicThread extends Thread {
     }
     @Override
     public void run() {
+        InputStream stream = new ByteArrayInputStream(samples);
+        play(stream);
         while(isloop && !isinterrupted){
-            InputStream stream = new ByteArrayInputStream(samples);
+            stream = new ByteArrayInputStream(samples);
             play(stream);
         }
     }

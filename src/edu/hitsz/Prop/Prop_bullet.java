@@ -1,7 +1,6 @@
 package edu.hitsz.Prop;
 
 import edu.hitsz.aircraft.HeroAircraft;
-import edu.hitsz.application.Game;
 import edu.hitsz.strategy.ScatterShoot;
 import edu.hitsz.strategy.StraightShoot;
 
@@ -15,9 +14,16 @@ public class Prop_bullet extends Prop{
         Runnable r = () -> {
             try {
                 heroAircraft.setStrategy(new ScatterShoot());
-                System.out.println("FireSupply active!");
+                heroAircraft.is_bomb += 1;
+                //System.out.println("FireSupply active!");
                 Thread.sleep(5000);
-                heroAircraft.setStrategy(new StraightShoot());
+                if(heroAircraft.is_bomb == 1){
+                    heroAircraft.setStrategy(new StraightShoot());
+                    heroAircraft.is_bomb -= 1;
+                } else {
+                    heroAircraft.is_bomb -= 1;
+                }
+
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }

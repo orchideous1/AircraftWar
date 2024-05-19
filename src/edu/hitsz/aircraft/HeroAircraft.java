@@ -29,7 +29,7 @@ public class HeroAircraft extends AbstractAircraft {
 //    private int power = 30;
 
 
-
+    public int is_bomb = 0;
     private Strategy strategy;
     private volatile static HeroAircraft heroAircraft = null;
     /**
@@ -92,7 +92,9 @@ public class HeroAircraft extends AbstractAircraft {
 ////        }
 ////        return res;
     }
-
+    public int getMaxHp(){
+        return this.maxHp;
+    }
     public void uphp(int hp_plus){
         if (this.hp + hp_plus < this.maxHp) {
             this.hp += hp_plus;
@@ -101,6 +103,12 @@ public class HeroAircraft extends AbstractAircraft {
         }
     }
 
+    public void setPower(int power) {
+        this.power = power;
+    }
 
+    public void restart(){
+        heroAircraft.hp = this.maxHp;
+    }
 
 }

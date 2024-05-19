@@ -1,0 +1,43 @@
+@startuml
+'https://plantuml.com/sequence-diagram
+Interface AbstractObserver {
+    +update()
+}
+
+class EliteEnemy {
+    +update()
+}
+
+class enemyAircraft {
+    +update()
+}
+
+class ElitePlusEnemy {
+    +update()
+}
+
+class EnemyBullet {
+    +update()
+}
+
+class MobEnemy {
+    +update()
+}
+
+
+AbstractObserver <|.. enemyAircraft
+
+AbstractObserver <|.. EnemyBullet
+
+enemyAircraft <|-- EliteEnemy
+enemyAircraft <|-- ElitePlusEnemy
+enemyAircraft <|-- MobEnemy
+
+class Prop_bomb{
+    + aftercrash(HeroAircraft heroAircraft): void
+    + Prop_bomb(int locationX, int locationY, int speedX, int speedY)
+}
+
+Prop_bomb o--> AbstractObserver
+
+@enduml

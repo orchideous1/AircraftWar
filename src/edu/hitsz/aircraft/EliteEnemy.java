@@ -4,6 +4,7 @@ import edu.hitsz.Factories.PropFactory;
 import edu.hitsz.Factories.PropFactory_blood;
 import edu.hitsz.Factories.PropFactory_bomb;
 import edu.hitsz.Factories.PropFactory_bullet;
+import edu.hitsz.Observer.AbstractObserver;
 import edu.hitsz.Prop.Prop;
 import edu.hitsz.Prop.Prop_blood;
 import edu.hitsz.application.Main;
@@ -15,14 +16,14 @@ import edu.hitsz.strategy.StraightShoot;
 import java.util.LinkedList;
 import java.util.List;
 
-public class EliteEnemy extends enemyAircraft {
+public class EliteEnemy extends enemyAircraft  {
 //    private int shootNum = 1;
 //
 //    private int power = 6;
 
 
 
-    private int Propnum = 1;
+    private int propnum = 1;
 
     public EliteEnemy(int locationX, int locationY, int speedX, int speedY, int hp){
         super(locationX, locationY, speedX, speedY, hp);
@@ -56,6 +57,11 @@ public class EliteEnemy extends enemyAircraft {
 //        }
 //        return res;
 //    }
+
+    @Override
+    public void update(){
+        this.vanish();
+    }
 
     public void aftercrash(List<Prop> MyProp){
         double prob = Math.random();

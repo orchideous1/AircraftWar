@@ -105,15 +105,17 @@ public class recordDAO implements DAO{
             System.out.println("InputStream error");
         }
         records.remove(rank_int-1);
-        for (scoreRecord rec :records){
+
             try (OutputStream output = new BufferedOutputStream(new FileOutputStream(file));
                  OutputStreamWriter writer = new OutputStreamWriter(output, StandardCharsets.UTF_8)) {
-                writer.write(rec.toString());
+                for (scoreRecord rec :records) {
+                    writer.write(rec.toString());
+                }
             } catch (IOException e) {
                 e.printStackTrace();
                 System.out.println("delete error");
             }
-        }
+
 
     }
 

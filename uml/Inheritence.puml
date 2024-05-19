@@ -54,8 +54,8 @@ class MobEnemy {
     + MobEnemy(int locationX, int locationY, int speedX, int speedY, int hp)
     + forward():void
     + shoot():List<BaseBullet>
+    + aftercrash(List<Prop> MyProp): void
 }
-AbstractAircraft <|-- MobEnemy
 
 class EliteEnemy{
     -shootNum: int
@@ -65,9 +65,35 @@ class EliteEnemy{
     + EliteEnemy(int locationX, int locationY, int speedX, int speedY, int hp)
     + forward(): void
     + shoot():List<BaseBullet>
+    + aftercrash(List<Prop> MyProp): void
 }
-AbstractAircraft <|-- EliteEnemy
 
+class ElitePlusEnemy{
+    + ElitePlusEnemy(int locationX, int locationY, int speedX, int speedY, int hp)
+    + forward(): void
+    + shoot():List<BaseBullet>
+    + aftercrash(List<Prop> MyProp): void
+}
+
+class BossEnemy{
+    - propNum: int
+    + BossEnemy(int locationX, int locationY, int speedX, int speedY, int hp)
+    + forward(): void
+    + shoot():List<BaseBullet>
+    + aftercrash(List<Prop> MyProp): void
+}
+
+abstract class enemyAircraft{
+    + enemyAircraft(int locationX, int locationY, int speedX, int speedY, int hp)
+    + aftercrash(List<Prop> MyProp): void
+}
+
+AbstractAircraft <|-- enemyAircraft
+
+enemyAircraft <|-- ElitePlusEnemy
+enemyAircraft <|-- BossEnemy
+enemyAircraft <|-- EliteEnemy
+enemyAircraft <|-- MobEnemy
 abstract class BaseBullet
 {
     - power:int
@@ -93,29 +119,35 @@ BaseBullet <|-- EnemyBullet
 abstract class Prop {
     + Prop(int locationX, int locationY, int speedX, int speedY)
     + forward(): void
-    + aftercrash(Game game): void
+    + {abstract}aftercrash(HeroAircraft heroAircraft): void
 }
 
 class Prop_blood{
     - blood: int
 
     + Prop_blood(int locationX, int locationY, int X, int Y, int blood)
-    + afercrash(Game game):void
+    + afercrash(HeroAircraft heroAircraft):void
 }
 
 class Prop_bomb{
     + Prop_bomb(int locationX, int locationY, int X, int Y)
-    + afercrash(Game game): void
+    + afercrash(HeroAircraft heroAircraft)): void
 }
 
 class Prop_bullet{
     + Prop_bullet(int locationX, int locationY, int X, int Y)
-    + aftercrash(Game game): void
+    + aftercrash(HeroAircraft heroAircraft): void
 }
 
-Prop_blood <|-- Prop
-Prop_bomb <|-- Prop
-Prop_bullet <|-- Prop
+class Prop_bulletPlus{
+    + prop_bulletPlus(int locationX, int locationY, int X, int Y)
+    + aftercrash(HeroAircraft heroAircraft): void
+}
+
+Prop <|-- Prop_blood
+Prop <|-- Prop_bomb
+Prop <|-- Prop_bullet
+Prop <|-- Prop_bulletPlus
 
 
 AbstractFlyingObject <|-- Prop

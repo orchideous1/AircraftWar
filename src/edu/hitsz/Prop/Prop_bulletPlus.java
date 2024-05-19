@@ -1,9 +1,7 @@
 package edu.hitsz.Prop;
 
 import edu.hitsz.aircraft.HeroAircraft;
-import edu.hitsz.application.Game;
 import edu.hitsz.strategy.CircleShoot;
-import edu.hitsz.strategy.ScatterShoot;
 import edu.hitsz.strategy.StraightShoot;
 
 public class Prop_bulletPlus extends Prop{

@@ -1,0 +1,59 @@
+@startuml
+abstract class Game{
+    # time: int
+    # score: int
+    # cycleTime : int
+    # cycleDuration:int
+    # backGroudTop:int
+    # executorService :ScheduleExecutorService
+    # timeInterval:int
+    # chapter: int
+    # isboss: boolean
+    # enemyMaxNumber:int
+    # threhold:int
+    + Game()
+    + action():void
+    + afterGame(): void
+    + playMusic():void
+    + generateAircraft():void
+    + timeCountAndNewCycleJudge():void
+    + shootAction():void
+    + heroShootAction():void
+    + bulletsMoveAction() :void
+    + aircraftMoveAction() :void
+    + PropMoveAction() :void
+    + afterBossEnd():void
+    + crashCheckAction() :void
+    + postProcessAction() :void
+    + paint():void
+    + paintImageWithPositionRevised(Graphics g, List<? extends AbstractFlyingObject> objects):void
+    + paintScoreAndLife(Graphics g) :void
+    + {abstract}generateBoss()
+}
+
+class easyGame{
+    + easyGame()
+    + generateBoss():void
+}
+
+class hardGame{
+    - hardness:double
+    + hardGame()
+    + generateBoss():void
+    + generateAircraft():void
+    + afterBossEnd():void
+}
+
+class mediumGame{
+    - hardness:double
+    + hardGame()
+    + generateBoss():void
+    + generateAircraft():void
+    + afterBossEnd():void
+}
+
+Game <|-- easyGame
+Game <|-- hardGame
+Game <|-- mediumGame
+
+@enduml

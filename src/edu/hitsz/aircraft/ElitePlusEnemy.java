@@ -3,6 +3,7 @@ import edu.hitsz.Factories.PropFactory;
 import edu.hitsz.Factories.PropFactory_blood;
 import edu.hitsz.Factories.PropFactory_bomb;
 import edu.hitsz.Factories.PropFactory_bullet;
+import edu.hitsz.Observer.AbstractObserver;
 import edu.hitsz.Prop.Prop;
 import edu.hitsz.Prop.Prop_blood;
 import edu.hitsz.application.Main;
@@ -14,13 +15,16 @@ import edu.hitsz.strategy.Strategy;
 
 import java.util.LinkedList;
 import java.util.List;
-public class ElitePlusEnemy extends enemyAircraft{
-//    private int shootNum = 5;
-//    private int power = 10;
+public class ElitePlusEnemy extends enemyAircraft implements AbstractObserver {
+    //    private int shootNum = 5;
+    //    private int power = 10;
 
 
 
-
+    @Override
+    public void update(){
+        this.hp -= this.hp/2;
+    }
 
     public ElitePlusEnemy(int locationX, int locationY, int speedX, int speedY, int hp){
         super(locationX, locationY, speedX, speedY, hp);

@@ -1,5 +1,9 @@
 package edu.hitsz.application;
 
+import edu.hitsz.Game.Game;
+import edu.hitsz.Game.easyGame;
+import edu.hitsz.Game.hardGame;
+import edu.hitsz.Game.mediumGame;
 import edu.hitsz.SwingDemo;
 
 import javax.swing.*;
@@ -23,6 +27,9 @@ public class Main {
 
     public static final int WINDOW_WIDTH = 512;
     public static final int WINDOW_HEIGHT = 768;
+
+    public static Game game;
+
 
     public static void main(String[] args) {
 
@@ -60,9 +67,16 @@ public class Main {
         }
 
 
-        Game game = new Game();
+        if (easy){
+            game = new easyGame();
+        } else if (medium){
+            game = new mediumGame();
+        } else {
+            game = new hardGame();
+        }
         cardPanel.add(game);
         cardLayout.next(cardPanel);
         game.action();
     }
+
 }

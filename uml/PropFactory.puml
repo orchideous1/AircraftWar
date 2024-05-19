@@ -4,32 +4,32 @@
 abstract class Prop {
     + Prop(int locationX, int locationY, int speedX, int speedY)
     + forward(): void
-    + aftercrash(Game game): void
+    + {abstract}}aftercrash(HeroAircraft heroAircraft): void
 }
 
 class Prop_blood{
     - blood: int
 
     + Prop_blood(int locationX, int locationY, int X, int Y, int blood)
-    + afercrash(Game game):void
+    + afercrash(HeroAircraft heroAircraft)):void
 }
 
 class Prop_bomb{
     + Prop_bomb(int locationX, int locationY, int X, int Y)
-    + afercrash(Game game): void
+    + afercrash(HeroAircraft heroAircraft)): void
 }
 
 class Prop_bullet{
     + Prop_bullet(int locationX, int locationY, int X, int Y)
-    + aftercrash(Game game): void
+    + aftercrash(HeroAircraft heroAircraft)): void
 }
 
-Prop_blood <|-- Prop
-Prop_bomb <|-- Prop
-Prop_bullet <|-- Prop
+Prop <|-- Prop_blood
+Prop <|-- Prop_bomb
+Prop <|-- Prop_bullet
 
 interface PropFactory{
-    + createProp(int locationX, int locationY, int X, int Y):Prop
+    + {abstract}createProp(int locationX, int locationY, int X, int Y):Prop
 }
 
 class PropFactory_blood{
@@ -44,9 +44,13 @@ class PropFactory_bullet{
     + createProp(int locationX, int locationY, int X, int Y):Prop
 }
 
-PropFactory_blood <|-- PropFactory
-PropFactory_bomb <|-- PropFactory
-PropFactory_bullet <|-- PropFactory
+PropFactory <|-- PropFactory_blood
+PropFactory <|-- PropFactory_bomb
+PropFactory <|-- PropFactory_bullet
 
 PropFactory ..> Prop
+
+
+
+
 @enduml

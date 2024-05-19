@@ -4,33 +4,51 @@
 
 
 interface enemyFactory{
-    + createEnemy(int locationX, int locationY, int speedX, int speedY, int hp):enemyAircraft
+    + {abstract}}createEnemy(int locationX, int locationY, int speedX, int speedY, int hp):enemyAircraft
 }
 
 abstract class enemyAircraft{
     + enemyAircraft(int locationX, int locationY, int speedX, int speedY, int hp)
-    + aftercrash():void
+    + {abstract}aftercrash(List<Prop> MyProp):void
 }
 
 class MobEnemy {
     + MobEnemy(int locationX, int locationY, int speedX, int speedY, int hp)
     + forward():void
     + shoot():List<BaseBullet>
+    + aftercrash(List<Prop> MyProp): void
 }
 
 
 class EliteEnemy{
-    -shootNum: int
-    -power: int
-    -direction: int
+    -propNum: int
 
     + EliteEnemy(int locationX, int locationY, int speedX, int speedY, int hp)
     + forward(): void
     + shoot():List<BaseBullet>
+    + aftercrash(List<Prop> MyProp): void
+}
+
+class ElitePlusEnemy{
+    + ElitePlusEnemy(int locationX, int locationY, int speedX, int speedY, int hp)
+    + forward(): void
+    + shoot():List<BaseBullet>
+    + aftercrash(List<Prop> MyProp): void
+}
+
+class BossEnemy{
+    -propNum: int
+
+    + BossEnemy(int locationX, int locationY, int speedX, int speedY, int hp)
+    + forward(): void
+    + shoot():List<BaseBullet>
+    + aftercrash(List<Prop> MyProp): void
 }
 
 enemyAircraft <|-- EliteEnemy
 enemyAircraft <|-- MobEnemy
+enemyAircraft <|-- BossEnemy
+enemyAircraft <|-- ElitePlusEnemy
 
 class MobFactory{
     + createEnemy(int locationX, int locationY, int speedX, int speedY, int hp):enemyAircraft
@@ -40,6 +58,16 @@ class EliteFactory{
     + createEnemy(int locationX, int locationY, int speedX, int speedY, int hp):enemyAircraft
 }
 
+class BossFactory{
+    + {static} myHp: int
+    + {static} shootNum: int
+    + createEnemy(int locationX, int locationY, int speedX, int speedY, int hp):enemyAircraft
+    + {static}increaseHp():void
+    + {static}increaseShootNum(): void
+}
+
+
+enemyFactory <|-- BossFactory
 enemyFactory <|-- MobFactory
 enemyFactory <|-- EliteFactory
 enemyFactory ..> enemyAircraft

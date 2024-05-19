@@ -1,5 +1,6 @@
 package edu.hitsz.aircraft;
 
+import edu.hitsz.Observer.AbstractObserver;
 import edu.hitsz.Prop.Prop;
 import edu.hitsz.application.Main;
 import edu.hitsz.bullet.BaseBullet;
@@ -13,7 +14,7 @@ import java.util.List;
  *
  * @author hitsz
  */
-public class MobEnemy extends enemyAircraft {
+public class MobEnemy extends enemyAircraft implements AbstractObserver {
 
     public MobEnemy(int locationX, int locationY, int speedX, int speedY, int hp) {
         super(locationX, locationY, speedX, speedY, hp);
@@ -36,6 +37,11 @@ public class MobEnemy extends enemyAircraft {
     @Override
     public void aftercrash(List<Prop> MyProp){
 
+    }
+
+    @Override
+    public void update() {
+        this.vanish();
     }
 
 }

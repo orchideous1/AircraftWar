@@ -7,6 +7,10 @@ import edu.hitsz.application.ImageManager;
 import edu.hitsz.application.Main;
 
 public class BossFactory implements enemyFactory{
+
+    private static int myHp = 500;
+
+    private static int shootNum = 20;
     public enemyAircraft createEnemy()
     {
         return new BossEnemy(
@@ -14,7 +18,16 @@ public class BossFactory implements enemyFactory{
                 ImageManager.ELITE_ENEMY_IMAGE.getHeight() / 2 ,
                 2,
                 0,
-                500
+                myHp,
+                shootNum
         );
+    }
+
+    public static void increaseHp(){
+        myHp += 200;
+    }
+
+    public static void increaseShootNum(){
+        shootNum += 10;
     }
 }

@@ -4,10 +4,16 @@ class scoreRecord{
     - UserName: String
     - date :Date
     + rank: int
-    + {static} formatter:SimpleDateFormat
+    - {static} formatter:SimpleDateFormat
 
+    + scoreRecord(int score)
+    + scoreRecord(int score,String userName)
+    + scoreRecord(int score,Date date,String userName)
+    + scoreRecord(int score,Date date)
+    + scoreRecord(String data)
     + setUserName(String userName):void
     + getUserName():String
+    + getDate(): String
     + scoreRecord(int score)
     + scoreRecord(int score,String userName)
     + scoreRecord(int score,Date date,String userName)
@@ -19,14 +25,18 @@ class scoreRecord{
 }
 
 interface DAO{
-    + findRecord(String UserName):void
-    + addRecord(scoreRecord record):void
-    + deleteRecord(String UserName):void
-    + showAllRecord():void
+    + {abstract}findRecord(String UserName):void
+    + {abstract}addRecord(scoreRecord record):void
+    + {abstract}deleteRecord(String UserName):void
+    + {abstract}showAllRecord():void
+    + {abstract}getAllRecord():String[][]
+    + {abstract}getHead(int num):List<scoreRecord>
 }
 
 class recordDAO{
     - file: File
+    + recordDAO()
+    + getAllRecord():String[][]
     + findRecord(String UserName):void
     + addRecord(scoreRecord record):void
     + deleteRecord(String UserName):void

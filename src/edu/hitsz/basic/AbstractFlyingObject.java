@@ -19,6 +19,7 @@ public abstract class AbstractFlyingObject {
      */
     protected int locationX;
 
+
     /**
      * y 轴坐标
      */
@@ -59,6 +60,8 @@ public abstract class AbstractFlyingObject {
      * 通常标记为 false的对象会在下次刷新时清除
      */
     protected boolean isValid = true;
+
+
 
     public AbstractFlyingObject() {
     }
@@ -161,6 +164,7 @@ public abstract class AbstractFlyingObject {
     public boolean notValid() {
         return !this.isValid;
     }
+
 
     /**
      * 标记消失，

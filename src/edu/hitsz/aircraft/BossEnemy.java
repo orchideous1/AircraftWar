@@ -22,9 +22,9 @@ public class BossEnemy extends enemyAircraft{
 
     private int propNum = 3;
 
-    public BossEnemy(int locationX, int locationY, int speedX, int speedY, int hp){
+    public BossEnemy(int locationX, int locationY, int speedX, int speedY, int hp, int shootNum){
         super(locationX, locationY, speedX, speedY, hp);
-        this.shootNum = 20;
+        this.shootNum = shootNum;
         this.power = 10;
         this.strategy = new CircleShoot();
     }
@@ -54,7 +54,7 @@ public class BossEnemy extends enemyAircraft{
         int speedX = 0;
         int speedY = 12;
         for (int j = 0; j < propNum; j++){
-            X += j - propNum / 2;
+            X += (j - propNum / 2) * 40;
             double prob = Math.random();
             PropFactory propFactory;
             if (prob < 0.1) {
@@ -78,4 +78,8 @@ public class BossEnemy extends enemyAircraft{
         }
     }
 
+    @Override
+    public void update() {
+        //Doing Nothing
+    }
 }

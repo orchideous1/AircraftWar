@@ -38,8 +38,6 @@ abstract class AbstractAircraft
 
 AbstractAircraft o--> strategy
 
-class Game{
 
-}
 
 @enduml
